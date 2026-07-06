@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>main_window</class>
+ <widget class="QMainWindow" name="main_window">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1117</width>
+    <height>717</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* Основной фон приложения - глубокий сине-черный */
+QMainWindow, QWidget {
+    background-color: #0d121c;
+    color: #ffffff;
+    font-family: &quot;Segoe UI&quot;, sans-serif;
+}
+
+/* Карточки (Сводка, приемы пищи) */
+QFrame {
+    background-color: #1a2230;
+    border-radius: 20px;
+    border: none;
+}
+
+/* Элементы списка питания */
+QPushButton#btn_add {
+    background-color: #2a3346;
+    border-radius: 15px;
+    color: white;
+}
+
+/* Акцентная кнопка &quot;плюс&quot; с градиентом */
+QPushButton#btn_plus {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, 
+                                stop:0 #6c63ff, stop:1 #8e88ff);
+    border-radius: 30px;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+/* Таблица и списки */
+QTableWidget, QListWidget {
+    background-color: #1a2230;
+    border: none;
+    outline: none;
+    color: #b0b8c6;
+}
+
+QTableWidget::item {
+    padding: 15px;
+    border-bottom: 1px solid #2a3346;
+}
+
+/* Тексты заголовков */
+QLabel {
+    color: #ffffff;
+}
+
+/* Дополнительные подписи (серый цвет) */
+QLabel#label_secondary {
+    color: #7b8596;
+}
+
+QTableWidget {
+    background-color: #1a2230; /* Цвет фона таблицы */
+    color: #ffffff;           /* БЕЛЫЙ ЦВЕТ ТЕКСТА */
+    gridline-color: #2a3346;  /* Цвет сетки */
+    border: none;
+}
+
+QTableWidget::item {
+    color: #ffffff;           /* Гарантированный белый цвет для ячеек */
+    padding: 5px;
+}
+
+/* Настройка заголовков таблицы (чтобы текст в них тоже был виден) */
+QHeaderView::section {
+    background-color: #2a3346;
+    color: #ffffff;           /* Белый текст заголовков */
+    font-weight: bold;
+    border: none;
+}
+
+QPushButton {
+    border-radius: 8px;
+    background-color: #2a3346;
+    color: white;
+    padding: 5px;
+}
+
+QComboBox {
+    border: 2px solid #7aa2f7; /* Красивая, заметная серо-голубая рамка */
+    border-radius: 6px;       /* Мягкое скругление углов */
+    padding: 3px 10px;        /* Отступы, чтобы текст не прижимался к краям */
+    background-color: #24283b; /* Фон чуть светлее или темнее основного, чтобы выделялся */
+    color: #c0caf5;           /* Цвет текста */
+}
+
+/* Стиль стрелочки справа */
+QComboBox::drop-down {
+    border: none;
+    background: transparent;
+    padding-right: 10px;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidge">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QLabel" name="lbl_photo">
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>250</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Нет фото</string>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_load_photo">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Загрузить фото</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_add">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>добавить продукт</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="3" column="1">
+         <widget class="QDoubleSpinBox" name="input_weight">
+          <property name="buttonSymbols">
+           <enum>QAbstractSpinBox::UpDownArrows</enum>
+          </property>
+          <property name="maximum">
+           <double>10000.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="label_2">
+          <property name="font">
+           <font>
+            <family>Segoe UI,sans-serif</family>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Вес (г)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLabel" name="label_3">
+          <property name="font">
+           <font>
+            <family>Segoe UI,sans-serif</family>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Ккал (на 100г)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="input_name"/>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="label">
+          <property name="font">
+           <font>
+            <family>Segoe UI,sans-serif</family>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Название продукта</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QDoubleSpinBox" name="input_kcal">
+          <property name="buttonSymbols">
+           <enum>QAbstractSpinBox::NoButtons</enum>
+          </property>
+          <property name="maximum">
+           <double>90000.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0" rowspan="2">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>68</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="8" column="1">
+         <widget class="QLabel" name="label_6">
+          <property name="font">
+           <font>
+            <family>Segoe UI,sans-serif</family>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Жиры (на 100г)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLabel" name="label_5">
+          <property name="font">
+           <font>
+            <family>Segoe UI,sans-serif</family>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Белки (на 100г)</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QDoubleSpinBox" name="input_protein">
+          <property name="buttonSymbols">
+           <enum>QAbstractSpinBox::NoButtons</enum>
+          </property>
+          <property name="maximum">
+           <double>10000.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="1">
+         <widget class="QDoubleSpinBox" name="input_fat">
+          <property name="buttonSymbols">
+           <enum>QAbstractSpinBox::NoButtons</enum>
+          </property>
+          <property name="maximum">
+           <double>10000.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="11" column="1">
+         <widget class="QDoubleSpinBox" name="input_carbs">
+          <property name="buttonSymbols">
+           <enum>QAbstractSpinBox::NoButtons</enum>
+          </property>
+          <property name="maximum">
+           <double>100000.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="1">
+         <widget class="QLabel" name="label_4">
+          <property name="font">
+           <font>
+            <family>Segoe UI,sans-serif</family>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Углеводы(100 г)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2" rowspan="2">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>88</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="5,0,0,0,0">
+      <property name="spacing">
+       <number>17</number>
+      </property>
+      <property name="leftMargin">
+       <number>20</number>
+      </property>
+      <property name="topMargin">
+       <number>20</number>
+      </property>
+      <property name="rightMargin">
+       <number>20</number>
+      </property>
+      <property name="bottomMargin">
+       <number>20</number>
+      </property>
+      <item>
+       <widget class="QTableWidget" name="table">
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>Название</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>вес(г)</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Ккал</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>белки</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>жиры</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>углеводы</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="font">
+           <font>
+            <family>Segoe UI,sans-serif</family>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>количество персон</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spin_persons">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbl_total_kcal">
+        <property name="font">
+         <font>
+          <family>Segoe UI,sans-serif</family>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <italic>false</italic>
+          <bold>true</bold>
+          <kerning>true</kerning>
+         </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Итого калорий: 0</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbl_portion_kcal">
+        <property name="font">
+         <font>
+          <family>Segoe UI,sans-serif</family>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>На 1 порцию: 0</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_clear">
+        <property name="text">
+         <string>очистить блюдо</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
