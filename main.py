@@ -86,3 +86,82 @@ class MainWindow(QMainWindow):
         self.ui.input_weight.valueChanged.connect(self.calculate_nutrients)
 
     def on_product_select(self, name_of_product):
+                if not name_of_product: return
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT kcal, protein, fat, carbs FROM products WHERE name = ?", (name_of_product,))
+        self.current_product_data = cursor.fetchone()
+        conn.close()
+        self.calculate_nutrients()
+
+    def calculate_nutrients(self):
+                if not self.current_product_data: return
+
+        weight = self.ui.input_weight.value()
+        factor = weight / 100
+
+        kcal = self.current_product_data[0] * factor
+        protein = self.current_product_data[1] * factor
+        fat = self.current_product_data[2] * factor
+        carbs = self.current_product_data[3] * factor
+
+        self.ui.input_kcal.blockSignals(True)
+        self.ui.input_protein.blockSignals(True)
+        self.ui.input_fat.blockSignals(True)
+        self.ui.input_carbs.blockSignals(True)
+
+        self.ui.input_kcal.setValue(kcal)
+        self.ui.input_protein.setValue(protein)
+        self.ui.input_fat.setValue(fat)
+        self.ui.input_carbs.setValue(carbs)
+
+        self.ui.input_kcal.blockSignals(False)
+        self.ui.input_protein.blockSignals(False)
+        self.ui.input_fat.blockSignals(False)
+        self.ui.input_carbs.blockSignals(False)
+    def load_photo(self):
+        from PyQt6.QtWidgets import QFileDialog
+        path, _ = QFileDialog.getOpenFileName(self, "Выберите фото")
+        if path:
+            pix = QPixmap(path)
+            self.ui.lbl_photo.setPixmap(pix.scaled(200, 200, Qt.AspectRatioMode.KeepAspectRatio))
+
+    def add_to_table(self):
+        if self.ui.input_weight.value() <= 0: return
+
+        row = self.ui.table.rowCount()
+        self.ui.table.insertRow(row)
+
+        self.ui.table.setItem(row, 0, QTableWidgetItem(self.ui.input_name.currentText()))
+        self.ui.table.setItem(row, 1, QTableWidgetItem(str(self.ui.input_weight.value())))
+        self.ui.table.setItem(row, 1, QTableWidgetItem(str(self.ui.input_kcal.value())))
+        self.ui.table.setItem(row, 1, QTableWidgetItem(str(self.ui.input_protein.value())))
+        self.ui.table.setItem(row, 1, QTableWidgetItem(str(self.ui.input_fat.value())))
+        self.ui.table.setItem(row, 1, QTableWidgetItem(str(self.ui.input_carbs.value())))
+        self.calculate_totals()
+
+    def calculate_totals(self):
+        total_kcal = 0
+        for i in range(self.ui.table.rowCount()):
+            val = float(self.ui.table.item(i, 2).text())
+            total_kcal += val
+        persons = self.ui.spin_persons.value()
+        self.ui.lbl_total_kcal.setText(f"Итого: {total_kcal:.1f} ккал")
+        if persons > 0:
+            self.ui.lbl_portion_kcal.setText(f"На порцию: {total_kcal / persons:.1f} ккал")
+
+    def clear_table(self):
+        self.ui.table.setRowCount(0)
+        self.calculate_totals()
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
+
+    
+      
+
+        
