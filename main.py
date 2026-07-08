@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
         self._setup_ui()
         self._load_products_to_list()
         self._bind_signals()
-
+        self.on_product_select(self.ui.input_name.currentText())
     def _init_db(self):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -86,7 +86,7 @@ class MainWindow(QMainWindow):
         self.ui.input_weight.valueChanged.connect(self.calculate_nutrients)
 
     def on_product_select(self, name_of_product):
-                if not name_of_product: return
+        if not name_of_product: return
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute("SELECT kcal, protein, fat, carbs FROM products WHERE name = ?", (name_of_product,))
@@ -95,8 +95,7 @@ class MainWindow(QMainWindow):
         self.calculate_nutrients()
 
     def calculate_nutrients(self):
-                if not self.current_product_data: return
-
+        if not self.current_product_data: return
         weight = self.ui.input_weight.value()
         factor = weight / 100
 
@@ -134,10 +133,10 @@ class MainWindow(QMainWindow):
 
         self.ui.table.setItem(row, 0, QTableWidgetItem(self.ui.input_name.currentText()))
         self.ui.table.setItem(row, 1, QTableWidgetItem(str(self.ui.input_weight.value())))
-        self.ui.table.setItem(row, 1, QTableWidgetItem(str(self.ui.input_kcal.value())))
-        self.ui.table.setItem(row, 1, QTableWidgetItem(str(self.ui.input_protein.value())))
-        self.ui.table.setItem(row, 1, QTableWidgetItem(str(self.ui.input_fat.value())))
-        self.ui.table.setItem(row, 1, QTableWidgetItem(str(self.ui.input_carbs.value())))
+        self.ui.table.setItem(row, 2, QTableWidgetItem(str(self.ui.input_kcal.value())))
+        self.ui.table.setItem(row, 3, QTableWidgetItem(str(self.ui.input_protein.value())))
+        self.ui.table.setItem(row, 4, QTableWidgetItem(str(self.ui.input_fat.value())))
+        self.ui.table.setItem(row, 5, QTableWidgetItem(str(self.ui.input_carbs.value())))
         self.calculate_totals()
 
     def calculate_totals(self):
