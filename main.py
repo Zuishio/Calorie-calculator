@@ -153,6 +153,13 @@ class MainWindow(QMainWindow):
         self.ui.table.setRowCount(0)
         self.calculate_totals()
 
+    def closeEvent(self, event):
+        reply = QMessageBox.question(self, "Выход", "Вы уверены что хотите выйти?,\n все несохранённые данные в таблице будут удалены", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if reply == QMessageBox.StandardButton.Yes:
+           event.accept()
+        elif reply == QMessageBox.StandardButton.No:
+           event.ignore()
+ 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
