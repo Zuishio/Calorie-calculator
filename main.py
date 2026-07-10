@@ -4,7 +4,7 @@ import json
 import sqlite3
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QTableWidgetItem,
                              QMessageBox, QHeaderView, QFileDialog)
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import (Qt, QSettings)
 from PyQt6.QtGui import QPixmap
 from ui_design import Ui_main_window
 import csv
@@ -22,6 +22,9 @@ class MainWindow(QMainWindow):
 
         self._init_db()
         self._setup_ui()
+        self.settings = QSettings("MyCompany", "AppCalculator")
+        self.current_theme = self.settings.value("theme", "light")
+        self.apply_theme()
         self._load_products_to_list()
         self._bind_signals()
         self.on_product_select(self.ui.input_name.currentText())
@@ -122,6 +125,26 @@ class MainWindow(QMainWindow):
             QMessageBox.information(self, "Успех", "Данные успешно загружены!")
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Не удалось загрузить: {e}")
+
+    def apply_theme(self):
+        if self.current_theme == "dark":
+            self.setStyleSheet("""
+                QMainWindow { background-color: #2b2b2b; color: #ffffff; }
+                QTableWidget { background-color: #3b3b3b; color: #ffffff; gridline-color: #555555; }
+                QHeaderView::section { background-color: #4b4b4b; color: #ffffff; }
+                QPushButton { background-color: #4b4b4b; color: #ffffff; border-radius: 5px; padding: 5px; }
+                QPushButton:hover { background-color: #5b5b5b; }
+            """)
+        else:
+            self.setStyleSheet("")
+
+    def toggle_theme(self):
+        if self.current_theme == "light":
+            self.current_theme = "dark"
+        else:
+            self.current_theme = "light"
+        self.settings.setValue("theme", self.current_theme)
+        self.apply_theme()
 
     def _load_products_to_list(self):
         conn = sqlite3.connect(self.db_path)
