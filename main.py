@@ -5,7 +5,7 @@ import sqlite3
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QTableWidgetItem,
                              QMessageBox, QHeaderView, QFileDialog)
 from PyQt6.QtCore import (Qt, QSettings)
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QPixmap, QShortcut, QKeySequence
 from ui_design import Ui_main_window
 import csv
 class MainWindow(QMainWindow):
@@ -27,6 +27,10 @@ class MainWindow(QMainWindow):
         self.apply_theme()
         self._load_products_to_list()
         self._bind_signals()
+        self.shortcut_theme = QShortcut(QKeySequence("Ctrl+T"), self)
+        self.shortcut_theme.activated.connect(self.toggle_theme)
+        self.shortcut_clear = QShortcut(QKeySequence("Ctrl+Del"), self)
+        self.shortcut_clear.activated.connect(self.clear_table)
         self.on_product_select(self.ui.input_name.currentText())
     def _init_db(self):
         conn = sqlite3.connect(self.db_path)
