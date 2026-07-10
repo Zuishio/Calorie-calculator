@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import sqlite3
+from PIL import Image, ImageQt
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QTableWidgetItem,
                              QMessageBox, QHeaderView, QFileDialog)
 from PyQt6.QtCore import (Qt, QSettings)
@@ -202,12 +203,17 @@ class MainWindow(QMainWindow):
         self.ui.input_protein.blockSignals(False)
         self.ui.input_fat.blockSignals(False)
         self.ui.input_carbs.blockSignals(False)
+        
     def load_photo(self):
-        from PyQt6.QtWidgets import QFileDialog
+        self.load_via_pil()
+        
+    def load_via_pil(self):
         path, _ = QFileDialog.getOpenFileName(self, "Выберите фото")
         if path:
-            pix = QPixmap(path)
-            self.ui.lbl_photo.setPixmap(pix.scaled(200, 200, Qt.AspectRatioMode.KeepAspectRatio))
+            img = Image.open(path)
+            img = img.resize((200, 200))
+            qimg = ImageQt.ImageQt(img)
+            self.ui.lbl_photo.setPixmap(QPixmap.fromImage(qimg))
 
     def add_to_table(self):
         if self.ui.input_weight.value() <= 0: return
