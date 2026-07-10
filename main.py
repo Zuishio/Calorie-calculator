@@ -3,11 +3,11 @@ import os
 import json
 import sqlite3
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QTableWidgetItem,
-                             QMessageBox, QHeaderView)
+                             QMessageBox, QHeaderView, QFileDialog)
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
 from ui_design import Ui_main_window
-
+import csv
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -60,11 +60,68 @@ class MainWindow(QMainWindow):
     def _setup_ui(self):
         self.ui = Ui_main_window()
         self.ui.setupUi(self)
+        self.ui.btn_export.clicked.connect(self.export_data)
+        self.ui.btn_import.clicked.connect(self.import_data)
 
         header = self.ui.table.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         for i in range(1, 6):
             header.setSectionResizeMode(i, QHeaderView.ResizeMode.ResizeToContents)
+          
+    def export_data(self):
+        if self.ui.table.rowCount() == 0:
+            QMessageBox.warning(self, "Ошибка", "Таблица пустая!")
+            return
+        path, filter_type = QFileDialog.getSaveFileName(self, "Сохранить данные", "", "JSON Files (*.json);;CSV Files (*.csv)")
+        if not path:
+            return
+        data = []
+        headers = [self.ui.table.horizontalHeaderItem(i).text() for i in range(self.ui.table.columnCount())]
+        for row in range(self.ui.table.rowCount()):
+            row_data = {}
+            for col in range(self.ui.table.columnCount()):
+                item = self.ui.table.item(row, col)
+                row_data[headers[col]] = item.text() if item else ""
+            data.append(row_data)
+
+        try:
+            if path.endswith('.json'):
+                with open(path, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, ensure_ascii=False, indent=4)
+            elif path.endswith('.csv'):
+                with open(path, 'w', encoding='utf-8', newline='') as f:
+                    writer = csv.DictWriter(f, fieldnames=headers)
+                    writer.writeheader()
+                    writer.writerows(data)
+            QMessageBox.information(self, "Успех", "Данные успешно экспортированы!")
+        except Exception as e:
+            QMessageBox.critical(self, "Ошибка", f"Не удалось сохранить: {e}")
+
+    def import_data(self):
+        path, _ = QFileDialog.getOpenFileName(self, "Загрузить данные", "", "JSON Files (*.json);;CSV Files (*.csv)")
+        if not path:
+            return
+        try:
+            data = []
+            if path.endswith('.json'):
+                with open(path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+            elif path.endswith('.csv'):
+                with open(path, 'r', encoding='utf-8') as f:
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        data.append(row)
+
+            self.ui.table.setRowCount(0)
+
+            for row_idx, row_data in enumerate(data):
+                self.ui.table.insertRow(row_idx)
+                for col_idx, key in enumerate(row_data.keys()):
+                    self.ui.table.setItem(row_idx, col_idx, QTableWidgetItem(str(row_data[key])))
+            self.calculate_totals()
+            QMessageBox.information(self, "Успех", "Данные успешно загружены!")
+        except Exception as e:
+            QMessageBox.critical(self, "Ошибка", f"Не удалось загрузить: {e}")
 
     def _load_products_to_list(self):
         conn = sqlite3.connect(self.db_path)
