@@ -68,6 +68,7 @@ class MainWindow(QMainWindow):
     def _setup_ui(self):
         self.ui = Ui_main_window()
         self.ui.setupUi(self)
+        self.ui.lbl_photo.setScaledContents(True)
         self.ui.btn_export.clicked.connect(self.export_data)
         self.ui.btn_import.clicked.connect(self.import_data)
 
